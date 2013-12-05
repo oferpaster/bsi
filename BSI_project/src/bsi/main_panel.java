@@ -3,18 +3,20 @@ package bsi;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.SystemColor;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 
 public class main_panel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JButton btnExit;
 	private JButton btnAddWork;
 	private JButton btnSearchBattery;
 	private JButton btnSearchClient;
 	private JButton btnReport;
-	private JButton btnExit;
-	
+
 	public main_panel() {
 		super();
 		initialize();
@@ -26,11 +28,6 @@ public class main_panel extends JPanel {
 		setLayout(null);
 
 		btnAddWork = new JButton("Add work");
-		btnAddWork.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			}
-		});
 		btnAddWork.setBounds(521, 64, 133, 25);
 		add(btnAddWork);
 
@@ -54,6 +51,22 @@ public class main_panel extends JPanel {
 	
 	public JButton getBtnExit() {
 		return btnExit;
+	}
+	
+	public JButton getBtnAddWork() {
+		return btnAddWork;
+	}
+
+	public JButton getBtnSearchBattery() {
+		return btnSearchBattery;
+	}
+
+	public JButton getBtnSearchClient() {
+		return btnSearchClient;
+	}
+
+	public JButton getBtnReport() {
+		return btnReport;
 	}
 
 }
