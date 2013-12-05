@@ -3,31 +3,57 @@ package bsi;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.SystemColor;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 
 public class main_panel extends JPanel {
+	
+	private JButton btnAddWork;
+	private JButton btnSearchBattery;
+	private JButton btnSearchClient;
+	private JButton btnReport;
+	private JButton btnExit;
+	
 	public main_panel() {
+		super();
+		initialize();
+	}
+
+	private void initialize() {
+		this.setSize(675, 465);
 		setBackground(SystemColor.activeCaption);
 		setLayout(null);
-		
-		JButton btnAddWork = new JButton("Add work");
-		btnAddWork.setBounds(325, 63, 133, 25);
+
+		btnAddWork = new JButton("Add work");
+		btnAddWork.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		btnAddWork.setBounds(521, 64, 133, 25);
 		add(btnAddWork);
-		
-		JButton btnSearchBattery = new JButton("Search battery");
-		btnSearchBattery.setBounds(325, 112, 133, 25);
+
+		btnSearchBattery = new JButton("Search battery");
+		btnSearchBattery.setBounds(521, 100, 133, 25);
 		add(btnSearchBattery);
-		
-		JButton btnSearchClient = new JButton("Search client");
-		btnSearchClient.setBounds(325, 160, 133, 23);
+
+		btnSearchClient = new JButton("Search client");
+		btnSearchClient.setBounds(521, 136, 133, 23);
 		add(btnSearchClient);
-		
-		JButton btnReport = new JButton("Report");
-		btnReport.setBounds(48, 64, 120, 58);
+
+		btnReport = new JButton("Report");
+		btnReport.setBounds(48, 83, 120, 58);
 		add(btnReport);
+
+		btnExit = new JButton("Exit");
 		
-		JButton btnExit = new JButton("Exit");
-		btnExit.setBounds(48, 165, 108, 36);
+		btnExit.setBounds(48, 388, 108, 36);
 		add(btnExit);
+	}
+	
+	public JButton getBtnExit() {
+		return btnExit;
 	}
 
 }
