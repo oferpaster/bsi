@@ -1,18 +1,20 @@
 package bsi;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.PreparedStatement;
-import com.mysql.jdbc.ResultSet;
+import java.lang.reflect.Array;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class MySqlConnection {
-	
-	private Object result = null;
 
-	public MySqlConnection(Object msg) {
+	private Object result = null;
+	private Connection conn;
+	private ResultSet rs = null;
+
+	public MySqlConnection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (Exception ex) {/* handle the error */
@@ -20,9 +22,9 @@ public class MySqlConnection {
 		}
 
 		try {
-			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/bsi_db", "root", "Op8448060");
+			conn = (Connection) DriverManager.getConnection(
+					"jdbc:mysql://localhost/bsi_db", "root", "Op8448060");
 			conn.setAutoCommit(false);
-			update(conn, msg);
 			System.out.println("SQL connection succeed");
 		} catch (SQLException ex) {/* handle any errors */
 			System.out.println("SQLException: " + ex.getMessage());
@@ -34,18 +36,21 @@ public class MySqlConnection {
 		}
 	}
 
-	public void update(Connection conn, Object msg) {
+	public Connection getConn() {
+		return conn;
+	}
+
+	public void update(Connection conn, String[] msg) {
 
 		String[] command = (String[]) msg;
 		try {
-			if (command[0].compareTo("SELECT") == 0) {
+			if (command[0].contains("SELECT")) {
 				readDB(conn, msg);
 			}
 
-			else if (command[0].compareTo("UPDATE") == 0) {
+			else if (command[0].contains("UPDATE")) {
 				updateDB(conn, msg);
-			}
-			else if (command[0].compareTo("INSERT") == 0){
+			} else if (command[0].contains("INSERT")) {
 				insertDB(conn, msg);
 			}
 			conn.close();
@@ -55,20 +60,27 @@ public class MySqlConnection {
 
 	}
 
-	private void readDB(Connection con, Object msg) {
-		String[] getStatment = (String[]) msg;
+	private void readDB(Connection con, String[] getStatment) {
+		boolean thereIsRslt = false;
 		try {
-			String selectSQL = "SELECT ? FROM ?;";
-			PreparedStatement selectData=(PreparedStatement) con.prepareStatement(selectSQL);
-			selectData.setString(1,getStatment[1]);
-			selectData.setString(2,getStatment[2]);
-			ResultSet rs = (ResultSet) selectData.executeQuery(selectSQL);
-			ArrayList<String> stringList = new ArrayList<String>();
+			String selectSQL = getStatment[0];
+			PreparedStatement selectData = con.prepareStatement(selectSQL);
+			for(int i=1; i<getStatment.length;i++ )
+				selectData.setString(i, getStatment[i]);
+			rs = selectData.executeQuery();
+			ArrayList<Object> list = new ArrayList<Object>();
 			while (rs.next()) {
-				stringList.add(rs.getString(1));;
+				list.add(rs.getString(1));
+				thereIsRslt = true;
 			}
-			rs.close();
-			setResult(stringList);
+			if (thereIsRslt) {
+				rs.close();
+				setResult(list);
+				thereIsRslt = false;
+			} else {
+				rs.close();
+				setResult("No Result");
+			}
 		} catch (Exception e) {
 			System.out.println("readDB error:" + e.getMessage());
 			setResult("readDB error:" + e.getMessage());
@@ -76,14 +88,13 @@ public class MySqlConnection {
 
 	}
 
-	private void updateDB(Connection con, Object msg) {
-
-		String[] getStatment = (String[]) msg;
+	private void updateDB(Connection con, String[] getStatment) {
 		try {
-			PreparedStatement updataData=(PreparedStatement) con.prepareStatement("UPDATE ? SET val= ? WHERE val= ?;");
-			updataData.setString(1,getStatment[1]);
-			updataData.setString(2,getStatment[2]);
-			updataData.setString(3,getStatment[3]);
+			PreparedStatement updataData = con
+					.prepareStatement("UPDATE ? SET val= ? WHERE val= ?;");
+			updataData.setString(1, getStatment[1]);
+			updataData.setString(2, getStatment[2]);
+			updataData.setString(3, getStatment[3]);
 			updataData.executeUpdate();
 			con.commit();
 		} catch (Exception e) {
@@ -92,13 +103,13 @@ public class MySqlConnection {
 		}
 		setResult(true);
 	}
-	
-	private void insertDB(Connection con, Object msg) {
-		String[] getStatment = (String[]) msg;
+
+	private void insertDB(Connection con, String[] getStatment) {
 		try {
-			PreparedStatement updataData=(PreparedStatement) con.prepareStatement("INSERT INTO ? VALUES(?);");
-			updataData.setString(1,getStatment[1]);
-			updataData.setString(2,getStatment[2]);
+			PreparedStatement updataData = con
+					.prepareStatement("INSERT INTO ? VALUES(?);");
+			updataData.setString(1, getStatment[1]);
+			updataData.setString(2, getStatment[2]);
 			updataData.executeUpdate();
 			con.commit();
 		} catch (Exception e) {
@@ -106,7 +117,7 @@ public class MySqlConnection {
 			setResult("insertDB error:" + e.getMessage());
 		}
 		setResult(true);
-		
+
 	}
 
 	private void setResult(Object result) {
@@ -118,5 +129,3 @@ public class MySqlConnection {
 	}
 
 }
-
-

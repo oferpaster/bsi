@@ -5,13 +5,18 @@ import java.awt.SystemColor;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+
 import java.awt.Font;
+
 import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -38,6 +43,11 @@ public class SearchClientPanel extends JPanel {
 	
 
 	private void initialize() {
+		try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        	JOptionPane.showMessageDialog(this,"setLookAndFeel error: " + e.getMessage() , "setLookAndFeel ERRORE", JOptionPane.ERROR_MESSAGE);
+        }
 		this.setSize(675, 465);
 		setBackground(SystemColor.activeCaption);
 		setLayout(null);

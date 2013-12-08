@@ -2,11 +2,10 @@ package bsi;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class BSI_mainGUI extends JFrame {
 
@@ -18,6 +17,7 @@ public class BSI_mainGUI extends JFrame {
 	private AddWorkPanel addWorkPanel;
 	private SearchBatteryPanel searchBatteryPanel;
 	private SearchClientPanel searchClientPanel;
+	private ReportPanel reportPanel;
 
 	private MySqlConnection con;
 
@@ -27,6 +27,11 @@ public class BSI_mainGUI extends JFrame {
 	}
 
 	private void initialize() {
+		try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        	JOptionPane.showMessageDialog(this,"setLookAndFeel error: " + e.getMessage() , "setLookAndFeel ERRORE", JOptionPane.ERROR_MESSAGE);
+        }
 		this.setSize(690, 475);
 		this.setContentPane(getMainPanel());
 		this.setTitle("BSI Managment Tool");
@@ -90,6 +95,18 @@ public class BSI_mainGUI extends JFrame {
 					}
 				});
 
+		mainPanel.getBtnReport().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setContentPane(getReportPanel());
+			}
+		});
+
+		getReportPanel().getBtnReturn().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setContentPane(getMainPanel());
+			}
+		});
+
 	}
 
 	protected void closeMainFrame() {
@@ -123,6 +140,13 @@ public class BSI_mainGUI extends JFrame {
 			searchClientPanel = new SearchClientPanel();
 		}
 		return searchClientPanel;
+	}
+
+	public ReportPanel getReportPanel() {
+		if (reportPanel == null) {
+			reportPanel = new ReportPanel();
+		}
+		return reportPanel;
 	}
 
 }

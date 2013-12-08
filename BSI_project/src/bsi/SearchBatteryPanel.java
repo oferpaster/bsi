@@ -3,8 +3,10 @@ package bsi;
 import java.awt.SystemColor;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.Font;
 
@@ -12,8 +14,10 @@ import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.UIManager;
 
 public class SearchBatteryPanel extends JPanel {
@@ -45,6 +49,11 @@ public class SearchBatteryPanel extends JPanel {
 	}
 	
 	private void initialize() {
+		try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        	JOptionPane.showMessageDialog(this,"setLookAndFeel error: " + e.getMessage() , "setLookAndFeel ERRORE", JOptionPane.ERROR_MESSAGE);
+        }
 		setLayout(null);
 		setBackground(SystemColor.activeCaption);
 		this.setSize(675, 465);

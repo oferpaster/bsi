@@ -1,12 +1,17 @@
 package bsi;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
-import java.awt.SystemColor;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
+import java.awt.SystemColor;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class main_panel extends JPanel {
-	
+
 	/**
 	 * 
 	 */
@@ -16,6 +21,7 @@ public class main_panel extends JPanel {
 	private JButton btnSearchBattery;
 	private JButton btnSearchClient;
 	private JButton btnReport;
+	private JLabel lblBsiManagmentTool;
 
 	public main_panel() {
 		super();
@@ -23,6 +29,14 @@ public class main_panel extends JPanel {
 	}
 
 	private void initialize() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			JOptionPane.showMessageDialog(this,
+					"setLookAndFeel error: " + e.getMessage(),
+					"setLookAndFeel ERRORE", JOptionPane.ERROR_MESSAGE);
+		}
 		this.setSize(675, 465);
 		setBackground(SystemColor.activeCaption);
 		setLayout(null);
@@ -44,15 +58,20 @@ public class main_panel extends JPanel {
 		add(btnReport);
 
 		btnExit = new JButton("Exit");
-		
-		btnExit.setBounds(48, 388, 108, 36);
+
+		btnExit.setBounds(10, 388, 108, 36);
 		add(btnExit);
+
+		lblBsiManagmentTool = new JLabel("BSI Managment Tool");
+		lblBsiManagmentTool.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblBsiManagmentTool.setBounds(212, 11, 250, 29);
+		add(lblBsiManagmentTool);
 	}
-	
+
 	public JButton getBtnExit() {
 		return btnExit;
 	}
-	
+
 	public JButton getBtnAddWork() {
 		return btnAddWork;
 	}
