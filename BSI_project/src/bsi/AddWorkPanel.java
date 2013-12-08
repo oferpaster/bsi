@@ -30,6 +30,9 @@ public class AddWorkPanel extends JPanel {
 	private JButton btnAddWork;
 	private JButton btnAddWorkReturn;
 	private JDateChooser dateChooser;
+	private JTextField textFieldRefurbished;
+	private JTextField txtScrap;
+	private JTextField textField;
 
 	public AddWorkPanel() {
 		super();
@@ -58,46 +61,49 @@ public class AddWorkPanel extends JPanel {
 
 		JLabel lblClientName = new JLabel("Client name:");
 		lblClientName.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblClientName.setBounds(37, 101, 115, 22);
+		lblClientName.setBounds(103, 101, 115, 22);
 		add(lblClientName);
 
 		JLabel lblBatteryID = new JLabel("Battery ID:");
 		lblBatteryID.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblBatteryID.setBounds(37, 134, 115, 22);
+		lblBatteryID.setBounds(103, 134, 115, 22);
 		add(lblBatteryID);
 
 		JLabel lblBatteryAmper = new JLabel("Battery amper:");
 		lblBatteryAmper.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblBatteryAmper.setBounds(37, 167, 136, 22);
+		lblBatteryAmper.setBounds(103, 167, 136, 22);
 		add(lblBatteryAmper);
 
 		JLabel lblBattryVolte = new JLabel("Battery volte:");
 		lblBattryVolte.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblBattryVolte.setBounds(37, 200, 136, 22);
+		lblBattryVolte.setBounds(103, 200, 136, 22);
 		add(lblBattryVolte);
 
 		textCilentName = new JTextField();
-		textCilentName.setBounds(194, 105, 287, 20);
+		textCilentName.setBounds(260, 105, 287, 20);
 		add(textCilentName);
 		textCilentName.setColumns(10);
 
 		textBatteryID = new JTextField();
-		textBatteryID.setBounds(194, 138, 287, 20);
+		textBatteryID.setEditable(false);
+		textBatteryID.setBounds(260, 138, 136, 20);
 		add(textBatteryID);
 		textBatteryID.setColumns(10);
 
 		textBatteryAmper = new JTextField();
-		textBatteryAmper.setBounds(194, 171, 287, 20);
+		textBatteryAmper.setEditable(false);
+		textBatteryAmper.setBounds(260, 171, 287, 20);
 		add(textBatteryAmper);
 		textBatteryAmper.setColumns(10);
 
 		textBatteryVolte = new JTextField();
-		textBatteryVolte.setBounds(194, 204, 287, 20);
+		textBatteryVolte.setEditable(false);
+		textBatteryVolte.setBounds(260, 204, 287, 20);
 		add(textBatteryVolte);
 		textBatteryVolte.setColumns(10);
 
 		btnAddWork = new JButton("Add Work");
-		btnAddWork.setBounds(274, 279, 127, 69);
+		btnAddWork.setBounds(418, 382, 129, 49);
 		add(btnAddWork);
 
 		btnAddWorkReturn = new JButton("Return");
@@ -106,19 +112,53 @@ public class AddWorkPanel extends JPanel {
 
 		JLabel lblDate = new JLabel("Date:");
 		lblDate.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblDate.setBounds(37, 233, 136, 22);
+		lblDate.setBounds(103, 332, 136, 22);
 		add(lblDate);
 
 		dateChooser = new JDateChooser();
-		dateChooser.setBounds(194, 235, 115, 20);
+		dateChooser.setBounds(260, 334, 115, 20);
 		add(dateChooser);
+		
+		JLabel lblRefurbished = new JLabel("Refurbished:");
+		lblRefurbished.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblRefurbished.setBounds(103, 266, 136, 22);
+		add(lblRefurbished);
+		
+		textFieldRefurbished = new JTextField();
+		textFieldRefurbished.setBounds(260, 270, 287, 20);
+		add(textFieldRefurbished);
+		textFieldRefurbished.setColumns(10);
+		
+		JLabel lblScrap = new JLabel("Scrap:");
+		lblScrap.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblScrap.setBounds(103, 299, 136, 22);
+		add(lblScrap);
+		
+		txtScrap = new JTextField();
+		txtScrap.setBounds(260, 301, 287, 20);
+		add(txtScrap);
+		txtScrap.setColumns(10);
+		
+		JButton btnSelectBattery = new JButton("Select battery");
+		btnSelectBattery.setBounds(405, 137, 142, 23);
+		add(btnSelectBattery);
+		
+		JLabel lblCells = new JLabel("Cells:");
+		lblCells.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblCells.setBounds(103, 233, 136, 22);
+		add(lblCells);
+		
+		textField = new JTextField();
+		textField.setEditable(false);
+		textField.setBounds(260, 237, 287, 20);
+		add(textField);
+		textField.setColumns(10);
 	}
 
 	private void Listners() {
 		btnAddWork.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat(
-						"dd/MM/yyyy");
+				java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("dd/MM/yyyy");
 				// String formattedDate = fmt.format(dateChooser.getDate());
 
 				/*

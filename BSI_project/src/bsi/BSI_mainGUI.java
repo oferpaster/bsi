@@ -1,7 +1,13 @@
 package bsi;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -18,7 +24,7 @@ public class BSI_mainGUI extends JFrame {
 	private SearchBatteryPanel searchBatteryPanel;
 	private SearchClientPanel searchClientPanel;
 	private ReportPanel reportPanel;
-
+	private AddBatteryFrame addBatteryFrame;
 	private MySqlConnection con;
 
 	public BSI_mainGUI() {
@@ -35,6 +41,9 @@ public class BSI_mainGUI extends JFrame {
 		this.setSize(690, 475);
 		this.setContentPane(getMainPanel());
 		this.setTitle("BSI Managment Tool");
+		this.setResizable(false);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 		getMainPanel();
 		Listners();
 	}
@@ -106,9 +115,34 @@ public class BSI_mainGUI extends JFrame {
 				setContentPane(getMainPanel());
 			}
 		});
+		
+		mainPanel.getBtnAddNewBattery().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				disableMainFrame();
+				getAddBatteryFrame();
+				getAddBatteryFrame().addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
+						enableMainFrame();
+						getAddBatteryFrame().setVisible(false);
+						getAddBatteryFrame().dispose();
+					}
+				});
+			}
+		});
 
 	}
 
+	protected void disableMainFrame() {
+		this.setEnabled(false);
+		this.setFocusable(false);
+	}
+	
+	protected void enableMainFrame() {
+		this.setEnabled(true);
+		this.setFocusable(true);
+	}
+	
 	protected void closeMainFrame() {
 		this.setVisible(false);
 		this.dispose();
@@ -147,6 +181,13 @@ public class BSI_mainGUI extends JFrame {
 			reportPanel = new ReportPanel();
 		}
 		return reportPanel;
+	}
+
+	public AddBatteryFrame getAddBatteryFrame() {
+		if(addBatteryFrame == null){
+			addBatteryFrame = new AddBatteryFrame();
+		}
+		return addBatteryFrame;
 	}
 
 }

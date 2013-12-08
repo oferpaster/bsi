@@ -1,5 +1,6 @@
 package bsi;
 
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -7,8 +8,15 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.SystemColor;
+
 import javax.swing.JLabel;
+
 import java.awt.Font;
+
+import javax.swing.JInternalFrame;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class main_panel extends JPanel {
 
@@ -22,7 +30,7 @@ public class main_panel extends JPanel {
 	private JButton btnSearchClient;
 	private JButton btnReport;
 	private JLabel lblBsiManagmentTool;
-
+	private JButton btnAddNewBattery;
 	public main_panel() {
 		super();
 		initialize();
@@ -66,6 +74,11 @@ public class main_panel extends JPanel {
 		lblBsiManagmentTool.setFont(new Font("Tahoma", Font.BOLD, 24));
 		lblBsiManagmentTool.setBounds(212, 11, 250, 29);
 		add(lblBsiManagmentTool);
+		
+		btnAddNewBattery = new JButton("Add new Battery");
+		btnAddNewBattery.setBounds(521, 170, 133, 23);
+		add(btnAddNewBattery);
+		
 	}
 
 	public JButton getBtnExit() {
@@ -86,6 +99,10 @@ public class main_panel extends JPanel {
 
 	public JButton getBtnReport() {
 		return btnReport;
+	}
+
+	public JButton getBtnAddNewBattery() {
+		return btnAddNewBattery;
 	}
 
 }
