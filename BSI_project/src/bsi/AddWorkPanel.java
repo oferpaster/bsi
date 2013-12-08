@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import com.toedter.calendar.JDateChooser;
 
 public class AddWorkPanel extends JPanel {
 	/**
@@ -82,6 +83,15 @@ public class AddWorkPanel extends JPanel {
 		btnAddWorkReturn = new JButton("Return");
 		btnAddWorkReturn.setBounds(37, 379, 100, 36);
 		add(btnAddWorkReturn);
+		
+		JLabel lblDate = new JLabel("Date:");
+		lblDate.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblDate.setBounds(37, 233, 136, 22);
+		add(lblDate);
+		
+		JDateChooser dateChooser = new JDateChooser();
+		dateChooser.setBounds(194, 235, 287, 20);
+		add(dateChooser);
 	}
 	
 	public JButton getBtnAddWork() {
