@@ -136,11 +136,13 @@ public class BSI_mainGUI extends JFrame {
 	protected void disableMainFrame() {
 		this.setEnabled(false);
 		this.setFocusable(false);
+		getMainPanel().setFocusable(false);
 	}
 	
 	protected void enableMainFrame() {
 		this.setEnabled(true);
 		this.setFocusable(true);
+		getMainPanel().setFocusable(true);
 	}
 	
 	protected void closeMainFrame() {
