@@ -90,8 +90,10 @@ public class AddBatteryPanel extends JPanel {
 				String[] msg = { "SELECT COUNT(battery.idbattery) AS 'numberOfId' FROM `bsi_db`.`battery`;" };
 				db.update(db.getConn(), msg);
 				String numberOfidStr = getSqlRslt(db).get(0).toString();
+				Long numberofidtoLong = Long.parseLong(numberOfidStr);
 				System.out.println(numberOfidStr);
-				Integer numberOfid = Integer.parseInt(numberOfidStr.replaceAll("-", ""));
+				//Integer numberOfid = Integer.parseInt(numberOfidStr.replaceAll("-", ""));
+				Integer numberOfid = numberofidtoLong != null ? numberofidtoLong.intValue() : null;
 				numberOfid++;
 
 				db = new MySqlConnection();

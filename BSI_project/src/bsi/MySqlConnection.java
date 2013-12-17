@@ -84,6 +84,8 @@ public class MySqlConnection {
 						list.add((String)obj);
 					else if (obj instanceof Integer)
 						list.add((Integer)obj);
+					else if (obj instanceof Long)
+						list.add((Long)obj);
 				}
 				thereIsRslt = true;
 			}
