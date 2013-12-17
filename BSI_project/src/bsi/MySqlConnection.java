@@ -1,16 +1,16 @@
 package bsi;
 
 import java.util.ArrayList;
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.ResultSetMetaData;
 
 public class MySqlConnection {
 
-	private ArrayList<String> result = new ArrayList<String>();
+	private ArrayList<Object> result = new ArrayList<Object>();
 	private Connection conn;
 	private ResultSet rs = null;
 
@@ -22,8 +22,10 @@ public class MySqlConnection {
 		}
 
 		try {
-			conn = (Connection) DriverManager.getConnection(
-					"jdbc:mysql://localhost/bsi_db", "root", "Op8448060");
+			conn = (Connection) DriverManager
+					.getConnection(
+							"jdbc:mysql://localhost/bsi_db?CharSet=utf8&useUnicode=true&characterEncoding=utf8",
+							"root", "Op8448060");
 			conn.setAutoCommit(false);
 			System.out.println("SQL connection succeed");
 		} catch (SQLException ex) {/* handle any errors */
@@ -67,19 +69,27 @@ public class MySqlConnection {
 			PreparedStatement selectData = con.prepareStatement(selectSQL);
 			for (int i = 1; i < getStatment.length; i++) {
 				if (getStatment[i] instanceof String)
-					selectData.setString(i,(String) getStatment[i]);
+					selectData.setString(i, (String) getStatment[i]);
 				else if (getStatment[i] instanceof Integer)
-					selectData.setInt(i,(Integer) getStatment[i]);
+					selectData.setInt(i, (Integer) getStatment[i]);
 			}
 			rs = selectData.executeQuery();
-			ArrayList<String> list = new ArrayList<String>();
+			ArrayList<Object> list = new ArrayList<Object>();
+			ResultSetMetaData metadata = rs.getMetaData();
+			int numberOfColumns = metadata.getColumnCount();
 			while (rs.next()) {
-				list.add(rs.getString(1));
+				for (int i = 1; i <= numberOfColumns; i++){
+					Object obj = rs.getObject(i);
+					if(obj instanceof String)
+						list.add((String)obj);
+					else if (obj instanceof Integer)
+						list.add((Integer)obj);
+				}
 				thereIsRslt = true;
 			}
 			if (thereIsRslt) {
 				rs.close();
-				for (String str : list)
+				for (Object str : list)
 					setResult(str);
 				thereIsRslt = false;
 			} else {
@@ -105,6 +115,7 @@ public class MySqlConnection {
 			}
 			updataData.executeUpdate();
 			con.commit();
+			setResult("true");
 		} catch (Exception e) {
 			System.out.println("updateDB error:" + e.getMessage());
 			setResult("updateDB error:" + e.getMessage());
@@ -131,11 +142,11 @@ public class MySqlConnection {
 	}
 
 	private void setResult(Object result) {
-		this.result.add((String) result);
+		this.result.add(result.toString());
 	}
 
-	public ArrayList<String> getResult() {
-		return (ArrayList<String>) this.result;
+	public ArrayList<Object> getResult() {
+		return this.result;
 	}
 
 }

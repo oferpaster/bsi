@@ -6,10 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -25,7 +25,6 @@ public class BSI_mainGUI extends JFrame {
 	private SearchClientPanel searchClientPanel;
 	private ReportPanel reportPanel;
 	private AddBatteryFrame addBatteryFrame;
-	private MySqlConnection con;
 
 	public BSI_mainGUI() {
 		super();
@@ -68,58 +67,72 @@ public class BSI_mainGUI extends JFrame {
 		mainPanel.getBtnAddWork().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setContentPane(getAddWorkPanel());
+				getAddWorkPanel().getBtnReturn().addActionListener(
+						new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								setContentPane(getMainPanel());
+								addWorkPanel = null;
+							}
+						});
 			}
 		});
 
-		getAddWorkPanel().getBtnReturn().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setContentPane(getMainPanel());
-					}
-				});
+		
 
 		mainPanel.getBtnSearchBattery().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setContentPane(getSearchBatteryPanel());
+				getSearchBatteryPanel().getBtnReturn().addActionListener(
+						new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								setContentPane(getMainPanel());
+								searchBatteryPanel = null;
+							}
+						});
+
 			}
 		});
 
-		getSearchBatteryPanel().getBtnReturn().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setContentPane(getMainPanel());
-					}
-				});
-
+		
 		mainPanel.getBtnSearchClient().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setContentPane(getSearchClientPanel());
+				getSearchClientPanel().getBtnReturn().addActionListener(
+						new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								setContentPane(getMainPanel());
+								searchClientPanel = null;
+							}
+						});
 			}
 		});
 
-		getSearchClientPanel().getBtnReturn().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setContentPane(getMainPanel());
-					}
-				});
+		
 
 		mainPanel.getBtnReport().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setContentPane(getReportPanel());
+				getReportPanel().getBtnReturn().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						setContentPane(getMainPanel());
+						reportPanel = null;
+					}
+				});
 			}
 		});
 
-		getReportPanel().getBtnReturn().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setContentPane(getMainPanel());
-			}
-		});
-		
 		mainPanel.getBtnAddNewBattery().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				disableMainFrame();
 				getAddBatteryFrame();
+				getAddBatteryFrame().getBtnReturn().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						enableMainFrame();
+						getAddBatteryFrame().setVisible(false);
+						getAddBatteryFrame().dispose();
+						addBatteryFrame = null;
+					}
+				});
 				getAddBatteryFrame().addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent e) {
@@ -130,9 +143,10 @@ public class BSI_mainGUI extends JFrame {
 				});
 			}
 		});
+		
 
 	}
-
+	
 	protected void disableMainFrame() {
 		this.setEnabled(false);
 		this.setFocusable(false);

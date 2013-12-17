@@ -2,21 +2,17 @@ package bsi;
 
 import java.awt.SystemColor;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
 
 import java.awt.Font;
 
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-
 public class AddBatteryPanel extends JPanel {
 	/**
 	 * 
@@ -26,6 +22,7 @@ public class AddBatteryPanel extends JPanel {
 	private JTextField txtClientName;
 	private JTextField txtBatteryAmper;
 	private JButton btnAdd;
+	private JButton btnReturn;
 
 	public AddBatteryPanel() {
 		super();
@@ -34,17 +31,9 @@ public class AddBatteryPanel extends JPanel {
 	}
 
 	private void initialize() {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			JOptionPane.showMessageDialog(this,
-					"setLookAndFeel error: " + e.getMessage(),
-					"setLookAndFeel ERRORE", JOptionPane.ERROR_MESSAGE);
-		}
 		setBackground(SystemColor.activeCaption);
 		this.setSize(390, 290);
-		this.setVisible(true);
+		//this.setVisible(true);
 		setLayout(null);
 
 		JLabel lblAddNewBattery = new JLabel("Add new battery");
@@ -82,7 +71,7 @@ public class AddBatteryPanel extends JPanel {
 		add(txtBatteryAmper);
 		txtBatteryAmper.setColumns(10);
 
-		JButton btnReturn = new JButton("Return");
+		btnReturn = new JButton("Return");
 		btnReturn.setBounds(10, 243, 108, 36);
 		add(btnReturn);
 
@@ -102,7 +91,7 @@ public class AddBatteryPanel extends JPanel {
 				db.update(db.getConn(), msg);
 				String numberOfidStr = getSqlRslt(db).get(0).toString();
 				System.out.println(numberOfidStr);
-				Integer numberOfid = Integer.parseInt(numberOfidStr);
+				Integer numberOfid = Integer.parseInt(numberOfidStr.replaceAll("-", ""));
 				numberOfid++;
 
 				db = new MySqlConnection();
@@ -117,21 +106,12 @@ public class AddBatteryPanel extends JPanel {
 					MySqlConnection con1 = new MySqlConnection();
 					Object[] msg2 = { "SELECT COUNT(client.idclient) AS 'numberOfId' FROM bsi_db.client " };
 					con1.update(con1.getConn(), msg2);
-					;
 					String clientNumberStr = getSqlRslt(con1).get(0).toString();
 					clientNumber = Integer.parseInt(clientNumberStr);
 				} else {
 					clientNumber = Integer.parseInt(clientID.toString());
 				}
-
-				db = new MySqlConnection();
-				Object[] addBattery = {
-						"INSERT INTO `bsi_db`.`battery` VALUES (?,?,?);",
-						numberOfid,
-						Integer.parseInt(txtBatteryAmper.getText()),
-						Integer.parseInt(txtBatteryVoltage.getText()) };
-				db.update(db.getConn(), addBattery);
-
+				
 				db = new MySqlConnection();
 				clientNumber++;
 				Object[] addClient = {
@@ -140,19 +120,33 @@ public class AddBatteryPanel extends JPanel {
 				db.update(db.getConn(), addClient);
 
 				db = new MySqlConnection();
+				Object[] addBattery = {
+						"INSERT INTO `bsi_db`.`battery` VALUES (?,?,?,?);",
+						numberOfid,clientNumber,
+						Integer.parseInt(txtBatteryAmper.getText()),
+						Integer.parseInt(txtBatteryVoltage.getText()) };
+				db.update(db.getConn(), addBattery);
+
+
+
+				db = new MySqlConnection();
 				Object[] addNewBattery = {
-						"INSERT INTO `bsi_db`.`clientbattery`(`idclient`,`idbattery`,`status`) VALUES (?,?,?);",
-						clientNumber, numberOfid, 1 };
+						"INSERT INTO `bsi_db`.`clientbattery`(`batteryid`,`clientid`,`status`) VALUES (?,?,?);",
+						numberOfid, clientNumber, 1 };
 				db.update(db.getConn(), addNewBattery);
 			}
 
 		});
 	}
 
-	public ArrayList<String> getSqlRslt(MySqlConnection con) {
-		ArrayList<String> result = null;
+	public ArrayList<Object> getSqlRslt(MySqlConnection con) {
+		ArrayList<Object> result = null;
 		while ((result = con.getResult()) == null) {
 		}
 		return result;
+	}
+
+	public JButton getBtnReturn() {
+		return btnReturn;
 	}
 }
