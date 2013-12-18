@@ -58,7 +58,6 @@ public class main_panel extends JPanel {
 		add(btnReport);
 
 		btnExit = new JButton("Exit");
-
 		btnExit.setBounds(10, 388, 108, 36);
 		add(btnExit);
 

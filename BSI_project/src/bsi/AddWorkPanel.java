@@ -1,36 +1,24 @@
 package bsi;
 
 import javax.swing.JPanel;
-
-import java.awt.Component;
 import java.awt.SystemColor;
-
 import javax.swing.JLabel;
-
 import java.awt.Font;
-
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import com.toedter.calendar.JDateChooser;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Vector;
-
 import javax.swing.JComboBox;
-import javax.swing.SwingConstants;
-import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 
 public class AddWorkPanel extends JPanel {
 	/**
@@ -226,7 +214,6 @@ public class AddWorkPanel extends JPanel {
 				MySqlConnection con = new MySqlConnection();
 				con.update(con.getConn(), updateClientBattery);
 				ArrayList<Object> result2 = getSqlRslt(con);
-				System.out.println(result2);
 			}
 		});
 
