@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+
 public class AddBatteryPanel extends JPanel {
 	/**
 	 * 
@@ -33,7 +34,7 @@ public class AddBatteryPanel extends JPanel {
 	private void initialize() {
 		setBackground(SystemColor.activeCaption);
 		this.setSize(390, 290);
-		//this.setVisible(true);
+		// this.setVisible(true);
 		setLayout(null);
 
 		JLabel lblAddNewBattery = new JLabel("Add new battery");
@@ -91,51 +92,53 @@ public class AddBatteryPanel extends JPanel {
 				db.update(db.getConn(), msg);
 				String numberOfidStr = getSqlRslt(db).get(0).toString();
 				Long numberofidtoLong = Long.parseLong(numberOfidStr);
-				System.out.println(numberOfidStr);
-				//Integer numberOfid = Integer.parseInt(numberOfidStr.replaceAll("-", ""));
-				Integer numberOfid = numberofidtoLong != null ? numberofidtoLong.intValue() : null;
+				System.out.println("numbers of client=" + numberOfidStr);
+				// Integer numberOfid =
+				// Integer.parseInt(numberOfidStr.replaceAll("-", ""));
+				Integer numberOfid = numberofidtoLong != null ? numberofidtoLong
+						.intValue() : null;
 				numberOfid++;
 
 				db = new MySqlConnection();
 				String[] checkForClientId = {
-						"SELECT client.idclient FROM bsi_db.client WHERE ? = ?;",
-						"client.name", txtClientName.getText() };
+						"SELECT client.idclient FROM bsi_db.client WHERE client.name = ?;",
+						txtClientName.getText() };
 				db.update(db.getConn(), checkForClientId);
 				Object clientID = getSqlRslt(db).get(0);
-
-				Integer clientNumber = 0;
+				Integer clientNumber;
+				clientNumber = 0;
 				if (clientID.equals("No Result")) {
 					MySqlConnection con1 = new MySqlConnection();
 					Object[] msg2 = { "SELECT COUNT(client.idclient) AS 'numberOfId' FROM bsi_db.client " };
 					con1.update(con1.getConn(), msg2);
 					String clientNumberStr = getSqlRslt(con1).get(0).toString();
 					clientNumber = Integer.parseInt(clientNumberStr);
+					clientNumber++;
 				} else {
 					clientNumber = Integer.parseInt(clientID.toString());
 				}
-				
-				db = new MySqlConnection();
-				clientNumber++;
-				Object[] addClient = {
-						"INSERT INTO `bsi_db`.`client` VALUES (?,?);",
-						clientNumber, txtClientName.getText() };
-				db.update(db.getConn(), addClient);
+
+				if (clientID.equals("No Result")) {
+					db = new MySqlConnection();
+					Object[] addClient = {
+							"INSERT INTO `bsi_db`.`client` VALUES (?,?);",
+							clientNumber, txtClientName.getText() };
+					db.update(db.getConn(), addClient);
+				}
 
 				db = new MySqlConnection();
 				Object[] addBattery = {
 						"INSERT INTO `bsi_db`.`battery` VALUES (?,?,?,?);",
-						numberOfid,clientNumber,
+						numberOfid, clientNumber,
 						Integer.parseInt(txtBatteryAmper.getText()),
 						Integer.parseInt(txtBatteryVoltage.getText()) };
 				db.update(db.getConn(), addBattery);
 
-
-
 				db = new MySqlConnection();
-				Object[] addNewBattery = {
+				Object[] addNewClientBattery = {
 						"INSERT INTO `bsi_db`.`clientbattery`(`batteryid`,`clientid`,`status`) VALUES (?,?,?);",
 						numberOfid, clientNumber, 1 };
-				db.update(db.getConn(), addNewBattery);
+				db.update(db.getConn(), addNewClientBattery);
 			}
 
 		});

@@ -169,11 +169,16 @@ public class AddWorkPanel extends JPanel {
 						ArrayList<Object> result2 = getSqlRslt(con);
 						ArrayList<Object> rs = (ArrayList<Object>) result2;
 						Vector<Object> row = new Vector<Object>(len);
-
-						for (int i = 1; i <= len; i++) {
-							row.add(rs.get(i - 1));
+						
+						int k = 0;
+						for (int j = 0; j < rs.size() / 3; j++) {
+							for (int i = 1; i <= len; i++) {
+								row.add(rs.get(k));
+								k++;
+							}
+							data.add(row);
+							row = new Vector<Object>(len);
 						}
-						data.add(row);
 
 						table = new JTable(data, cols) {
 							/**
@@ -215,7 +220,8 @@ public class AddWorkPanel extends JPanel {
 						"UPDATE bsi_db.clientbattery SET refurbished = ? ,scrap = ? WHERE batteryid = ? AND clientid = ? ;",
 						Integer.parseInt(textFieldRefurbished.getText()),
 						Integer.parseInt(txtScrap.getText()),
-						Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()),
+						Integer.parseInt(table.getValueAt(
+								table.getSelectedRow(), 0).toString()),
 						Integer.parseInt(clientid) };
 				MySqlConnection con = new MySqlConnection();
 				con.update(con.getConn(), updateClientBattery);
