@@ -1,20 +1,26 @@
 package bsi;
 
 import java.awt.SystemColor;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.Font;
+
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Vector;
+
 import javax.swing.UIManager;
 
 public class SearchBatteryPanel extends JPanel {
@@ -28,6 +34,8 @@ public class SearchBatteryPanel extends JPanel {
 	private JRadioButton rdbtnAmper;
 	private JRadioButton rdbtnVolt;
 	private JRadioButton rdbtnAmperVolt;
+	private JRadioButton rdbtnClientName;
+	private JRadioButton rdbtnClientId;
 	private ButtonGroup radioGroup;
 	private JPanel panelBatteryID;
 	private JPanel panelSelection;
@@ -37,6 +45,11 @@ public class SearchBatteryPanel extends JPanel {
 	private JButton btnReturn;
 	private JLabel lblFirstValue;
 	private ResultFrame resultFrame;
+	private MySqlConnection con;
+	private String[] columnNames = { "Battery ID", "Client ID", "Client name",
+			"Amper", "Volt", "Start date", "End date", "Refurbished", "scrap",
+			"status" };
+	private Vector<String> cols;
 
 	public SearchBatteryPanel() {
 		super();
@@ -53,9 +66,15 @@ public class SearchBatteryPanel extends JPanel {
 					"setLookAndFeel error: " + e.getMessage(),
 					"setLookAndFeel ERRORE", JOptionPane.ERROR_MESSAGE);
 		}
+
 		setLayout(null);
 		setBackground(SystemColor.activeCaption);
 		this.setSize(675, 465);
+
+		int len = columnNames.length;
+		cols = new Vector<String>(len);
+		for (int i = 0; i < len; i++)
+			cols.add(columnNames[i]);
 
 		JLabel lblSearchBattery = new JLabel("Search battery");
 		lblSearchBattery.setFont(new Font("Tahoma", Font.BOLD, 24));
@@ -95,13 +114,15 @@ public class SearchBatteryPanel extends JPanel {
 		rdbtnAmperVolt.setBackground(SystemColor.activeCaption);
 		radioGroup.add(rdbtnAmperVolt);
 
-		JRadioButton rdbtnClientId = new JRadioButton("Client ID");
+		rdbtnClientId = new JRadioButton("Client ID");
+		
 		radioGroup.add(rdbtnClientId);
 		rdbtnClientId.setBackground(SystemColor.activeCaption);
 		rdbtnClientId.setBounds(253, 16, 67, 23);
 		panelSelection.add(rdbtnClientId);
 
-		JRadioButton rdbtnClientName = new JRadioButton("Client name");
+		rdbtnClientName = new JRadioButton("Client name");
+		
 		radioGroup.add(rdbtnClientName);
 		rdbtnClientName.setBackground(SystemColor.activeCaption);
 		rdbtnClientName.setBounds(253, 42, 81, 23);
@@ -154,6 +175,57 @@ public class SearchBatteryPanel extends JPanel {
 	}
 
 	private void listners() {
+		
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (rdbtnBatteryId.isSelected()) {
+					searchBttery();
+				}
+
+				else if (rdbtnAmper.isSelected()) {
+					searchAmper(Integer.parseInt(textFirstValue.getText()));
+				}
+
+				else if (rdbtnVolt.isSelected()) {
+					searchVolt(Integer.parseInt(textFirstValue.getText()));
+				}
+
+				else if (rdbtnAmperVolt.isSelected()) {
+					searchAmperVolt(
+							Integer.parseInt(textSecondValue.getText()),
+							Integer.parseInt(textFirstValue.getText()));
+				}
+
+				else if (rdbtnClientId.isSelected()) {
+					searchClientByID(Integer.parseInt(textFirstValue.getText()));
+				}
+				
+				else if (rdbtnClientName.isSelected()){
+					searchClientByName(textFirstValue.getText());
+				}
+
+			}
+		});
+		
+		rdbtnClientName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textSecondValue.setVisible(false);
+				lblSecondValue.setVisible(false);
+				lblFirstValue.setText("Client name:");
+				lblFirstValue.setFont(new Font("Tahoma", Font.BOLD, 18));
+			}
+		});
+		
+		rdbtnClientId.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				textSecondValue.setVisible(false);
+				lblSecondValue.setVisible(false);
+				lblFirstValue.setText("Client ID:");
+				lblFirstValue.setFont(new Font("Tahoma", Font.BOLD, 18));
+			}
+		});
+		
+		
 		rdbtnBatteryId.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textSecondValue.setVisible(false);
@@ -176,7 +248,7 @@ public class SearchBatteryPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				textSecondValue.setVisible(false);
 				lblSecondValue.setVisible(false);
-				lblFirstValue.setText("Battery volte:");
+				lblFirstValue.setText("Battery volt:");
 				lblFirstValue.setFont(new Font("Tahoma", Font.BOLD, 18));
 			}
 		});
@@ -184,67 +256,57 @@ public class SearchBatteryPanel extends JPanel {
 		rdbtnAmperVolt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textSecondValue.setVisible(true);
-				lblSecondValue.setText("Battery volte:");
+				lblSecondValue.setText("Battery volt:");
 				lblSecondValue.setVisible(true);
 
+				textFirstValue.setVisible(true);
 				lblFirstValue.setText("Battery amper:");
 				lblFirstValue.setFont(new Font("Tahoma", Font.BOLD, 18));
 			}
 		});
+	}
 
-		btnSearch.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (rdbtnBatteryId.isEnabled()) {
+	protected void searchAmperVolt(int volt, int amper) {
+		Object[] searchByAmperVolt = {
+				"SELECT * FROM `bsi_db`.`clientbatteryinfo` WHERE amper = ? AND volt = ?;",
+				amper, volt };
+		insertDataAndShow(sendToSql(searchByAmperVolt));
+	}
 
-					ArrayList<Object> ResultFromBatteryTable = dataFromBatteryTable();
+	protected void searchAmper(int amper) {
+		Object[] searchByAmper = {
+				"SELECT * FROM `bsi_db`.`clientbatteryinfo` WHERE amper = ?;",
+				amper };
+		insertDataAndShow(sendToSql(searchByAmper));
+	}
 
-					Integer idclient = Integer.parseInt(ResultFromBatteryTable
-							.get(1).toString());
-					String[] columnNames = { "Battery ID", "Client name",
-							"Volt", "Amper", "Start date", "End date",
-							"Refurbished", "scrap", "status" };
-					int len = columnNames.length;
-					Vector<String> cols = new Vector<String>(len);
-					for (int i = 0; i < len; i++)
-						cols.add(columnNames[i]);
+	protected void searchVolt(int volt) {
+		Object[] searchByVolt = {
+				"SELECT * FROM `bsi_db`.`clientbatteryinfo` WHERE volt = ?;",
+				volt };
+		insertDataAndShow(sendToSql(searchByVolt));
+	}
 
-					String findClient = findClientName(idclient);/*
-																 * find client
-																 * name by id
-																 */
-					ArrayList<Object> resultFromClientBattry = dataFromClientBattery();
+	protected void searchClientByID(int idclient) {
+		Object[] searchByClientID = {
+				"SELECT * FROM `bsi_db`.`clientbatteryinfo` WHERE idclient = ?;",
+				idclient };
+		insertDataAndShow(sendToSql(searchByClientID));
+	}
 
-					Vector<Object> row = new Vector<Object>(len);
-					Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+	protected void searchClientByName(String name) {
+		Object[] searchByClientName = {
+				"SELECT * FROM `bsi_db`.`clientbatteryinfo` WHERE name = ?;",
+				name };
+		insertDataAndShow(sendToSql(searchByClientName));
+	}
 
-					row.add(ResultFromBatteryTable.get(0));/* batteryID */
-					row.add(findClient);/* Client name */
-					row.add(ResultFromBatteryTable.get(2));/* battery volt */
-					row.add(ResultFromBatteryTable.get(3));/* battery amper */
-					for (Object value : resultFromClientBattry) {
-						if (!value.equals("no value"))
-							row.add(value);
-						else
-							row.add("0");
-					}
-
-					data.add(row);
-
-					resultFrame = new ResultFrame(data, cols);
-					resultFrame.setEnabled(true);
-					resultFrame.setVisible(true);
-					resultFrame.getBtnClose().addActionListener(
-							new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									resultFrame.setEnabled(false);
-									resultFrame.setVisible(false);
-									resultFrame.dispose();
-									resultFrame = null;
-								}
-							});
-				}
-			}
-		});
+	public ArrayList<Object> dataFromBatteryTable() {
+		Object[] msg = {
+				"SELECT * FROM bsi_db.clientbatteryinfo WHERE idbattery = ? ;",
+				Integer.parseInt(textFirstValue.getText()) };
+		sendToSql(msg);
+		return getSqlRslt(con);
 	}
 
 	public JButton getBtnReturn() {
@@ -271,31 +333,58 @@ public class SearchBatteryPanel extends JPanel {
 		return textFirstValue;
 	}
 
-	public String findClientName(int id) {
-		Object[] findClientName = {
-				"SELECT client.name FROM bsi_db.client WHERE client.idclient = ?;",
-				id };
-		MySqlConnection con = new MySqlConnection();
-		con.update(con.getConn(), findClientName);
-		return getSqlRslt(con).get(0).toString();
-	}
-
 	public ArrayList<Object> dataFromClientBattery() {
 		Object[] getDataFromClientBattery = {
-				"SELECT clientbattery.startDate, clientbattery.endDate, clientbattery.refurbished, clientbattery.scrap, clientbattery.status FROM bsi_db.clientbattery WHERE clientbattery.batteryid = ?;",
+				"SELECT * FROM bsi_db.clientbatteryinfo WHERE clientbatteryinfo.idbattery = ?;",
 				Integer.parseInt(textFirstValue.getText()) };
-		MySqlConnection con = new MySqlConnection();
-		con.update(con.getConn(), getDataFromClientBattery);
+		sendToSql(getDataFromClientBattery);
 		return getSqlRslt(con);
-
 	}
 
-	public ArrayList<Object> dataFromBatteryTable() {
-		Object[] msg = {
-				"SELECT battery.idbattery, battery.idclient, battery.volt, battery.amper FROM bsi_db.battery WHERE idbattery = ? ;",
-				Integer.parseInt(textFirstValue.getText()) };
-		MySqlConnection con = new MySqlConnection();
+	public ArrayList<Object> sendToSql(Object[] msg) {
+		con = new MySqlConnection();
 		con.update(con.getConn(), msg);
 		return getSqlRslt(con);
 	}
+
+	protected void searchBttery() {
+		ArrayList<Object> ResultFromBatteryTable = dataFromBatteryTable();
+		insertDataAndShow(ResultFromBatteryTable);
+	}
+
+	protected void insertDataAndShow(ArrayList<Object> resultFromSql) {
+		Vector<Object> row = new Vector<Object>(columnNames.length);
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		int i = 1;
+		for (Object value : resultFromSql) {
+			if (!value.equals("no value"))
+				row.add(value);
+			else
+				row.add("0");
+			if(i % (columnNames.length) == 0){
+				data.add(row);
+				i = 1;
+				row = new Vector<Object>(columnNames.length);
+			}
+			else
+				i++;
+			
+		}
+		creatResultTable(data);
+	}
+
+	protected void creatResultTable(Vector<Vector<Object>> data) {
+		resultFrame = new ResultFrame(data, cols);
+		resultFrame.setEnabled(true);
+		resultFrame.setVisible(true);
+		resultFrame.getBtnClose().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resultFrame.setEnabled(false);
+				resultFrame.setVisible(false);
+				resultFrame.dispose();
+				resultFrame = null;
+			}
+		});
+	}
+
 }

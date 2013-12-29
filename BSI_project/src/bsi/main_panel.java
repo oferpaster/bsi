@@ -18,7 +18,6 @@ public class main_panel extends JPanel {
 	private JButton btnExit;
 	private JButton btnAddWork;
 	private JButton btnSearchBattery;
-	private JButton btnSearchClient;
 	private JButton btnReport;
 	private JLabel lblBsiManagmentTool;
 	private JButton btnAddNewBattery;
@@ -42,23 +41,19 @@ public class main_panel extends JPanel {
 		setLayout(null);
 
 		btnAddWork = new JButton("Add work");
-		btnAddWork.setBounds(521, 64, 133, 25);
+		btnAddWork.setBounds(521, 64, 113, 36);
 		add(btnAddWork);
 
 		btnSearchBattery = new JButton("Search battery");
-		btnSearchBattery.setBounds(521, 100, 133, 25);
+		btnSearchBattery.setBounds(521, 118, 113, 36);
 		add(btnSearchBattery);
-
-		btnSearchClient = new JButton("Search client");
-		btnSearchClient.setBounds(521, 136, 133, 25);
-		add(btnSearchClient);
 
 		btnReport = new JButton("Report");
 		btnReport.setBounds(48, 83, 120, 58);
 		add(btnReport);
 
 		btnExit = new JButton("Exit");
-		btnExit.setBounds(10, 388, 108, 36);
+		btnExit.setBounds(10, 388, 113, 36);
 		add(btnExit);
 
 		lblBsiManagmentTool = new JLabel("BSI Managment Tool");
@@ -67,7 +62,7 @@ public class main_panel extends JPanel {
 		add(lblBsiManagmentTool);
 		
 		btnAddNewBattery = new JButton("Add new Battery");
-		btnAddNewBattery.setBounds(521, 170, 133, 25);
+		btnAddNewBattery.setBounds(521, 172, 113, 36);
 		add(btnAddNewBattery);
 		
 	}
@@ -82,10 +77,6 @@ public class main_panel extends JPanel {
 
 	public JButton getBtnSearchBattery() {
 		return btnSearchBattery;
-	}
-
-	public JButton getBtnSearchClient() {
-		return btnSearchClient;
 	}
 
 	public JButton getBtnReport() {

@@ -26,3 +26,6 @@ public ArrayList<Object> getSqlRslt(MySqlConnection con) {
 		}
 		return result;
 	}
+
+	
+SELECT idbattery,idclient,name,amper,volt,startDate,endDate,refurbished,scrap,status FROM bsi_db.battery , (SELECT batteryid,startDate,endDate,refurbished,scrap,status FROM bsi_db.clientbattery) as temp , (SELECT client.name FROM bsi_db.client) as tempclient WHERE battery.idbattery = temp.batteryid;

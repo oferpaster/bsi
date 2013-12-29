@@ -25,7 +25,6 @@ public class BSI_mainGUI extends JFrame {
 	private main_panel mainPanel;
 	private AddWorkPanel addWorkPanel;
 	private SearchBatteryPanel searchBatteryPanel;
-	private SearchClientPanel searchClientPanel;
 	private ReportPanel reportPanel;
 	private AddBatteryFrame addBatteryFrame;
 	private ResultFrame resultFrame;
@@ -64,6 +63,7 @@ public class BSI_mainGUI extends JFrame {
 				if (result == JOptionPane.YES_OPTION) {
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					closeMainFrame();
+					System.exit(0);
 				}
 			}
 		});
@@ -95,22 +95,6 @@ public class BSI_mainGUI extends JFrame {
 						});
 			}
 		});
-
-		
-		mainPanel.getBtnSearchClient().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setContentPane(getSearchClientPanel());
-				getSearchClientPanel().getBtnReturn().addActionListener(
-						new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								setContentPane(getMainPanel());
-								searchClientPanel = null;
-							}
-						});
-			}
-		});
-
-		
 
 		mainPanel.getBtnReport().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -185,13 +169,6 @@ public class BSI_mainGUI extends JFrame {
 			searchBatteryPanel = new SearchBatteryPanel();
 		}
 		return searchBatteryPanel;
-	}
-
-	public SearchClientPanel getSearchClientPanel() {
-		if (searchClientPanel == null) {
-			searchClientPanel = new SearchClientPanel();
-		}
-		return searchClientPanel;
 	}
 
 	public ReportPanel getReportPanel() {

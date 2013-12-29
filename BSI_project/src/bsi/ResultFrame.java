@@ -32,7 +32,7 @@ public class ResultFrame extends JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
         	JOptionPane.showMessageDialog(this,"setLookAndFeel error: " + e.getMessage() , "setLookAndFeel ERRORE", JOptionPane.ERROR_MESSAGE);
         }
-		this.setSize(690, 475);
+		this.setSize(800, 600);
 		this.setContentPane(getResultPanel());
 		this.setTitle("BSI Managment Tool - Search Results");
 		this.setResizable(false);

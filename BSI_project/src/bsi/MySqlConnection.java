@@ -2,6 +2,7 @@ package bsi;
 
 import java.util.ArrayList;
 import java.sql.Connection;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,7 +56,6 @@ public class MySqlConnection {
 			} else if (command.contains("INSERT")) {
 				insertDB(conn, msg);
 			}
-			conn.close();
 		} catch (Exception e) {
 			setResult("update error:" + e.getMessage());
 		}
@@ -72,6 +72,8 @@ public class MySqlConnection {
 					selectData.setString(i, (String) getStatment[i]);
 				else if (getStatment[i] instanceof Integer)
 					selectData.setInt(i, (Integer) getStatment[i]);
+				else if (getStatment[i] instanceof Date)
+					selectData.setDate(i, (java.sql.Date) getStatment[i]);
 			}
 			rs = selectData.executeQuery();
 			ArrayList<Object> list = new ArrayList<Object>();
@@ -89,6 +91,8 @@ public class MySqlConnection {
 						list.add((Integer)obj);
 					else if (obj instanceof Long)
 						list.add((Long)obj);
+					else if (obj instanceof Date)
+						list.add((Date)obj);
 				}
 				thereIsRslt = true;
 			}
